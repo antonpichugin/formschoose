@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оставьте отзыв</title>
+    <style>
+        /* =============== ОБЩИЕ СТИЛИ =============== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        /* =============== СЕКЦИЯ: ФОРМА ОТЗЫВА =============== */
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .field .optional {
+            font-weight: 400;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .field input[type="text"],
+        .field input[type="tel"],
+        .field textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #333;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: #2AABEE;
+        }
+
+        .field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* =============== ЗВЁЗДЫ =============== */
+        .stars-container {
+            margin-bottom: 20px;
+        }
+
+        .stars-container label.stars-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 8px;
+        }
+
+        .star {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .star:hover {
+            transform: scale(1.15);
+        }
+
+        .star svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .star svg path {
+            fill: none;
+            stroke: #FFD700;
+            stroke-width: 1.5;
+            transition: fill 0.2s;
+        }
+
+        .star.active svg path {
+            fill: #FFD700;
+        }
+
+        /* =============== КНОПКА ОТПРАВИТЬ =============== */
+        .submit-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn-submit {
+            background: #2AABEE;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background: #45b8f0;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+
+        .btn-submit:disabled {
+            background: #b0d9f0;
+            cursor: not-allowed;
+        }
+
+        /* =============== РЕЗУЛЬТАТ: ПОЗИТИВ =============== */
+        .result-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .result-subtitle {
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        /* =============== КНОПКИ ПЛАТФОРМ =============== */
+        .platform-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .platform-btn:hover {
+            border-color: #2AABEE;
+            box-shadow: 0 2px 12px rgba(42, 171, 238, 0.12);
+        }
+
+        .platform-btn img,
+        .platform-btn svg {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        /* =============== КНОПКА КОПИРОВАТЬ =============== */
+        .btn-copy {
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+            background: #2AABEE;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: #45b8f0;
+        }
+
+        .btn-copy.copied {
+            background: #4CAF50;
+        }
+
+        /* =============== РАЗДЕЛИТЕЛЬ =============== */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 16px;
+            color: #999;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* =============== ТЕЛЕФОН + КНОПКА В РЯД =============== */
+        .phone-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .phone-row input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1.5px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #333;
+            font-family: inherit;
+        }
+
+        .phone-row input:focus {
+            outline: none;
+            border-color: #2AABEE;
+        }
+
+        .phone-row .btn-submit {
+            white-space: nowrap;
+        }
+
+        /* =============== СООБЩЕНИЕ УСПЕХА =============== */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 16px;
+            background: #f0faf0;
+            border-radius: 10px;
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 12px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* =============== АДАПТИВ =============== */
+        @media (max-width: 400px) {
+            .container { padding: 20px; }
+            .star { width: 34px; height: 34px; }
+            .result-title { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- =============================================
+         СЕКЦИЯ 1: ФОРМА СБОРА ОТЗЫВА
+         ============================================= -->
+    <div id="formSection">
+
+        <!-- Имя -->
+        <div class="field">
+            <label>Имя</label>
+            <input type="text" id="userName" placeholder="Как вас зовут?">
+        </div>
+
+        <!-- Дата обращения -->
+        <div class="field">
+            <label>Дата обращения <span class="optional">*необязательно</span></label>
+            <input type="text" id="userDate" placeholder="Например, 15.06.2025">
+        </div>
+
+        <!-- Звёзды -->
+        <div class="stars-container">
+            <label class="stars-label">Ваша оценка</label>
+            <div class="stars" id="starsBlock">
+                <div class="star" data-value="1">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div class="star" data-value="2">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div class="star" data-value="3">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div class="star" data-value="4">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+                <div class="star" data-value="5">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Текст отзыва -->
+        <div class="field">
+            <textarea id="userReview" placeholder="Расскажите ваше мнение о нашей компании"></textarea>
+        </div>
+
+        <!-- Кнопка отправить -->
+        <div class="submit-row">
+            <button class="btn-submit" id="btnSubmit" onclick="handleSubmit()">Отправить</button>
+        </div>
+
+    </div>
+
+
+    <!-- =============================================
+         СЕКЦИЯ 2: ПОЗИТИВ (4-5 звёзд)
+         ============================================= -->
+    <div id="positiveSection" class="result-section">
+
+        <div class="result-title">Спасибо за ваш отзыв!</div>
+        <div class="result-subtitle">
+            Благодарим за отзыв, если разместите его<br>на удобной для вас платформе - сделаем скидку 10% на следующую покупку!
+        </div>
+
+        <!-- ===========================================
+             КНОПКИ ПЛАТФОРМ — РЕДАКТИРУЙТЕ ЗДЕСЬ
+             Меняйте href="..." на нужные ссылки
+             Меняйте src="..." на нужные иконки
+             =========================================== -->
+
+        <!-- Яндекс.Карты -->
+        <a href="https://yandex.ru/maps/org/"
+           target="_blank"
+   class="platform-btn"
+   onclick="trackPlatformClick('Яндекс.Карты')">
+    <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="#FC3F1D"/>
+        <path d="M16.5 21h-2.1v-5.4h-1.2L10.8 21H8.4l2.7-5.7c-1.5-.6-2.4-1.8-2.4-3.5 0-2.4 1.7-3.8 4.2-3.8h3.6V21zm-2.1-7.2V9.8h-1.2c-1.4 0-2.3.8-2.3 2.1 0 1.2.7 1.9 2.1 1.9h1.4z" fill="white"/>
+    </svg>
+    <span>Яндекс.Карты</span>
+</a>
+
+        <!-- 2ГИС -->
+        <a href="https://2gis.ru/"
+           target="_blank"
+   class="platform-btn"
+   onclick="trackPlatformClick('2ГИС')">
+    <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="#2DB544"/>
+        <text x="14" y="19" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="Arial">2GIS</text>
+    </svg>
+    <span>2ГИС</span>
+</a>
+
+        <!-- Google Maps --> 
+        <a href="https://maps.app.goo.gl/"
+           target="_blank"
+   class="platform-btn"
+   onclick="trackPlatformClick('Google Maps')">
+    <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="#4285F4"/>
+        <path d="M14 7c-2.76 0-5 2.24-5 5 0 4.5 5 9 5 9s5-4.5 5-9c0-2.76-2.24-5-5-5zm0 7.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="white"/>
+    </svg>
+    <span>Google Maps</span>
+</a>
+
+
+        <!-- =========================================
+             КОНЕЦ БЛОКА ПЛАТФОРМ
+             ========================================= -->
+
+        <!-- Кнопка копировать -->
+        <button class="btn-copy" id="btnCopy" onclick="copyReview()">
+            📋 Скопировать ваш отзыв
+        </button>
+
+    </div>
+
+
+    <!-- =============================================
+         СЕКЦИЯ 3: НЕГАТИВ (1-3 звезды)
+         ============================================= -->
+    <div id="negativeSection" class="result-section">
+
+        <div class="result-title">Спасибо за обратную связь!</div>
+        <div class="result-subtitle">
+            Сожалеем, что вы остались недовольны качеством наших услуг.
+            Мы дорожим репутацией и хотим исправиться — оставьте номер телефона ниже или напишите нам
+        </div>
+
+        <!-- ===========================================
+             КНОПКИ МЕССЕНДЖЕРОВ — РЕДАКТИРУЙТЕ ЗДЕСЬ
+             Меняйте href="..." на нужные ссылки
+             =========================================== -->
+
+        <!-- WhatsApp -->
+        <a href="https://api.whatsapp.com/send/"
+           target="_blank"
+   class="platform-btn"
+   onclick="trackMessengerClick('WhatsApp')">
+    <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="#25D366"/>
+        <path d="M14.04 7.2c-3.74 0-6.78 3.04-6.78 6.78 0 1.2.31 2.36.9 3.38l-0.94 3.44 3.53-0.93c.98.54 2.1.82 3.29.82 3.74 0 6.78-3.04 6.78-6.78s-3.04-6.71-6.78-6.71zm3.97 9.68c-.17.47-.98.9-1.37.96-.36.05-.82.07-1.33-.08-.3-.1-.7-.23-1.2-.45-2.1-.91-3.47-3.03-3.57-3.17-.1-.14-.82-1.09-.82-2.08s.52-1.47.7-1.68c.18-.2.4-.25.53-.25h.38c.12 0 .29-.05.45.34.17.4.57 1.4.62 1.5.05.1.09.23.02.37-.07.14-.1.22-.2.35-.1.12-.22.27-.31.36-.1.1-.21.21-.09.42.12.2.52.86 1.12 1.4.77.68 1.42.9 1.62 1 .2.1.32.08.44-.05.12-.13.5-.58.64-.78.13-.2.27-.17.45-.1.18.07 1.15.54 1.35.64.2.1.33.15.38.23.05.09.05.5-.12.97z" fill="white"/>
+    </svg>
+    <span>Написать в WhatsApp</span>
+</a>
+
+        <!-- Telegram -->
+        <a href="https://t.me/"
+           target="_blank"
+   class="platform-btn"
+   onclick="trackMessengerClick('Telegram')">
+    <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="#2AABEE"/>
+        <path d="M19.94 9.06l-2.41 11.37c-.18.8-.65.99-1.32.62l-3.65-2.69-1.76 1.7c-.2.2-.36.36-.73.36l.26-3.7 6.73-6.08c.29-.26-.06-.41-.46-.15l-8.32 5.24-3.58-1.12c-.78-.24-.79-.78.16-1.16l14-5.4c.65-.24 1.22.16 1.01 1.16l.07-.15z" fill="white"/>
+    </svg>
+    <span>Написать в Telegram</span>
+</a>
+
+<!-- MAX (VK Мессенджер) -->
+        <a href="https://max.ru/"
+           target="_blank"
+           class="platform-btn"
+           onclick="trackMessengerClick('MAX')">
+            <svg viewBox="0 0 28 28" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+                <rect width="28" height="28" rx="6" fill="#0077FF"/>
+                <text x="14" y="19.5" text-anchor="middle" fill="white" font-size="11" font-weight="800" font-family="Arial, sans-serif">MAX</text>
+            </svg>
+            <span>Написать в MAX</span>
+        </a>
+
+        <!-- =========================================
+             КОНЕЦ БЛОКА МЕССЕНДЖЕРОВ
+             ========================================= -->
+
+        <!-- Разделитель -->
+        <div class="divider"><span>ИЛИ</span></div>
+
+        <!-- Телефон -->
+        <div class="phone-row" id="phoneRow">
+            <input type="tel" id="userPhone" placeholder="+7 (___) ___-__-__"
+                   oninput="formatPhone(this)">
+            <button class="btn-submit" onclick="submitPhone()">Отправить</button>
+        </div>
+
+        <!-- Сообщение об успехе -->
+        <div class="success-message" id="phoneSuccess">
+            ✅ Обращение получено!
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =============================================
+     СКРЫТЫЕ ФОРМЫ ДЛЯ FORMSUBMIT
+     ============================================= -->
+
+<!-- ===========================================
+     ГЛАВНАЯ НАСТРОЙКА: УКАЖИТЕ EMAIL ЗАКАЗЧИКА
+     =========================================== -->
+
+<!-- Форма для позитивного отзыва -->
+<form id="hiddenFormPositive"
+      action="https://formsubmit.co/"
+      method="POST"
+      target="hidden_iframe"
+      style="display:none;">
+    <input type="hidden" name="_subject" value="⭐ Позитивный отзыв">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="about:blank">
+    <input type="hidden" name="Имя" id="hfPosName">
+    <input type="hidden" name="Дата обращения" id="hfPosDate">
+    <input type="hidden" name="Оценка" id="hfPosRating">
+    <input type="hidden" name="Отзыв" id="hfPosReview">
+</form>
+
+<!-- Форма для негативного отзыва -->
+<form id="hiddenFormNegative"
+      action="https://formsubmit.co/"
+      method="POST"
+      target="hidden_iframe"
+      style="display:none;">
+    <input type="hidden" name="_subject" value="⚠️ Негативный отзыв">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="about:blank">
+    <input type="hidden" name="Имя" id="hfNegName">
+    <input type="hidden" name="Дата обращения" id="hfNegDate">
+    <input type="hidden" name="Оценка" id="hfNegRating">
+    <input type="hidden" name="Отзыв" id="hfNegReview">
+</form>
+
+<!-- Форма для отправки телефона (негатив) -->
+<form id="hiddenFormPhone"
+      action="https://formsubmit.co/"
+      method="POST"
+      target="hidden_iframe"
+      style="display:none;">
+    <input type="hidden" name="_subject" value="📞 Клиент оставил телефон (негатив)">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="about:blank">
+    <input type="hidden" name="Имя" id="hfPhoneName">
+    <input type="hidden" name="Дата обращения" id="hfPhoneDate">
+    <input type="hidden" name="Оценка" id="hfPhoneRating">
+    <input type="hidden" name="Отзыв" id="hfPhoneReview">
+    <input type="hidden" name="Телефон" id="hfPhoneNumber">
+</form>
+
+<!-- Форма для трекинга клика по мессенджеру -->
+<form id="hiddenFormMessenger"
+      action="https://formsubmit.co/"
+      method="POST"
+      target="hidden_iframe"
+      style="display:none;">
+    <input type="hidden" name="_subject" value="💬 Клиент перешёл в мессенджер">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="about:blank">
+    <input type="hidden" name="Имя" id="hfMsgName">
+    <input type="hidden" name="Дата обращения" id="hfMsgDate">
+    <input type="hidden" name="Оценка" id="hfMsgRating">
+    <input type="hidden" name="Отзыв" id="hfMsgReview">
+    <input type="hidden" name="Мессенджер" id="hfMsgPlatform">
+</form>
+
+<!-- Форма для трекинга клика по платформе отзывов -->
+<form id="hiddenFormPlatform"
+      action="https://formsubmit.co/"
+      method="POST"
+      target="hidden_iframe"
+      style="display:none;">
+    <input type="hidden" name="_subject" value="🌟 Клиент перешёл оставить отзыв">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="about:blank">
+    <input type="hidden" name="Имя" id="hfPlatName">
+    <input type="hidden" name="Оценка" id="hfPlatRating">
+    <input type="hidden" name="Отзыв" id="hfPlatReview">
+    <input type="hidden" name="Платформа" id="hfPlatPlatform">
+</form>
+
+<!-- Скрытый iframe для отправки без перезагрузки -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
+
+<!-- =============================================
+     СКРИПТЫ
+     ============================================= -->
+<script>
+    // Состояние
+    let selectedRating = 0;
+    let reviewText = '';
+    let userName = '';
+    let userDate = '';
+
+    // ===== ЗВЁЗДЫ =====
+    const stars = document.querySelectorAll('.star');
+
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            selectedRating = parseInt(star.dataset.value);
+            updateStars();
+        });
+
+        star.addEventListener('mouseenter', () => {
+            const val = parseInt(star.dataset.value);
+            stars.forEach(s => {
+                s.classList.toggle('active', parseInt(s.dataset.value) <= val);
+            });
+        });
+    });
+
+    document.getElementById('starsBlock').addEventListener('mouseleave', () => {
+        updateStars();
+    });
+
+    function updateStars() {
+        stars.forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating);
+        });
+    }
+
+    // ===== ОТПРАВКА ОСНОВНОЙ ФОРМЫ =====
+    function handleSubmit() {
+        userName = document.getElementById('userName').value.trim();
+        userDate = document.getElementById('userDate').value.trim();
+        reviewText = document.getElementById('userReview').value.trim();
+
+        if (selectedRating === 0) {
+            alert('Пожалуйста, поставьте оценку');
+            return;
+        }
+
+        // Скрыть форму
+        document.getElementById('formSection').style.display = 'none';
+
+        if (selectedRating >= 4) {
+            // === ПОЗИТИВ ===
+            document.getElementById('hfPosName').value = userName || 'Не указано';
+            document.getElementById('hfPosDate').value = userDate || 'Не указано';
+            document.getElementById('hfPosRating').value = selectedRating + ' из 5';
+            document.getElementById('hfPosReview').value = reviewText || 'Без текста';
+            document.getElementById('hiddenFormPositive').submit();
+
+            document.getElementById('positiveSection').style.display = 'block';
+        } else {
+            // === НЕГАТИВ ===
+            document.getElementById('hfNegName').value = userName || 'Не указано';
+            document.getElementById('hfNegDate').value = userDate || 'Не указано';
+            document.getElementById('hfNegRating').value = selectedRating + ' из 5';
+            document.getElementById('hfNegReview').value = reviewText || 'Без текста';
+            document.getElementById('hiddenFormNegative').submit();
+
+            document.getElementById('negativeSection').style.display = 'block';
+        }
+    }
+
+    // ===== КОПИРОВАНИЕ ОТЗЫВА =====
+    function copyReview() {
+        const text = reviewText || '';
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('btnCopy');
+            btn.textContent = '✅ Скопировано';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = '📋 Скопировать ваш отзыв';
+                btn.classList.remove('copied');
+            }, 3000);
+        }).catch(() => {
+            // Фоллбек для старых браузеров
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            const btn = document.getElementById('btnCopy');
+            btn.textContent = '✅ Скопировано';
+            btn.classList.add('copied');
+        });
+    }
+
+    // ===== ТРЕКИНГ КЛИКА ПО ПЛАТФОРМЕ =====
+    function trackPlatformClick(platformName) {
+        document.getElementById('hfPlatName').value = userName || 'Не указано';
+        document.getElementById('hfPlatRating').value = selectedRating + ' из 5';
+        document.getElementById('hfPlatReview').value = reviewText || 'Без текста';
+        document.getElementById('hfPlatPlatform').value = platformName;
+        document.getElementById('hiddenFormPlatform').submit();
+    }
+
+    // ===== ТРЕКИНГ КЛИКА ПО МЕССЕНДЖЕРУ =====
+    function trackMessengerClick(messengerName) {
+        document.getElementById('hfMsgName').value = userName || 'Не указано';
+        document.getElementById('hfMsgDate').value = userDate || 'Не указано';
+        document.getElementById('hfMsgRating').value = selectedRating + ' из 5';
+        document.getElementById('hfMsgReview').value = reviewText || 'Без текста';
+        document.getElementById('hfMsgPlatform').value = messengerName;
+        document.getElementById('hiddenFormMessenger').submit();
+    }
+
+    // ===== ОТПРАВКА ТЕЛЕФОНА =====
+    function submitPhone() {
+        const phone = document.getElementById('userPhone').value.trim();
+        if (phone.length < 11) {
+            alert('Пожалуйста, введите корректный номер телефона');
+            return;
+        }
+
+        document.getElementById('hfPhoneName').value = userName || 'Не указано';
+        document.getElementById('hfPhoneDate').value = userDate || 'Не указано';
+        document.getElementById('hfPhoneRating').value = selectedRating + ' из 5';
+        document.getElementById('hfPhoneReview').value = reviewText || 'Без текста';
+        document.getElementById('hfPhoneNumber').value = phone;
+        document.getElementById('hiddenFormPhone').submit();
+
+        document.getElementById('phoneRow').style.display = 'none';
+        document.getElementById('phoneSuccess').style.display = 'block';
+    }
+
+    // ===== МАСКА ТЕЛЕФОНА =====
+    function formatPhone(input) {
+        let value = input.value.replace(/\D/g, '');
+
+        if (value.length === 0) {
+            input.value = '';
+            return;
+        }
+
+        // Если начинает с 8 или 7, нормализуем
+        if (value[0] === '8') {
+            value = '7' + value.slice(1);
+        }
+        if (value[0] !== '7') {
+            value = '7' + value;
+        }
+
+        let formatted = '+7';
+        if (value.length > 1) formatted += ' (' + value.slice(1, 4);
+        if (value.length > 4) formatted += ') ' + value.slice(4, 7);
+        if (value.length > 7) formatted += '-' + value.slice(7, 9);
+        if (value.length > 9) formatted += '-' + value.slice(9, 11);
+
+        input.value = formatted;
+    }
+</script>
+
+</body>
+</html>
